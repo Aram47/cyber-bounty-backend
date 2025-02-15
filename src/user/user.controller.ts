@@ -14,7 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -26,7 +26,7 @@ export class UserController {
     @Query('email') email?: string,
     @Query('username') username?: string,
   ) {
-    return this.userService.findOne({email, username});
+    return this.userService.findOne({ email, username });
   }
 
   @Patch(':id')

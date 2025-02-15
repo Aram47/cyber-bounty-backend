@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -31,15 +31,30 @@ export class UserService {
     email?: string;
   }): Promise<User> {
     const query: any = {};
-    if (username) query.username = username;
-    if (email) query.email = email;
+    if (username) {
+      query['username'] = username;
+    } else if (email) {
+      query['email'] = email;
+    }
 
-    return this.prisma.user.findFirst({
-      where: {
-        username,
-        email,
-      },
-    });
+    try {
+      const res = await this.prisma.user.findFirstOrThrow({
+        where: query as User,
+      });
+      // console.log(id, res['id']);
+
+      // if (id == res['id']) {
+      //   throw new BadRequestException("You can't send document to yourself");
+      // }
+      return res;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new BadRequestException("User doesn't exist");
+        }
+      }
+      throw new HttpException('Internal server error', 500);
+    }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
