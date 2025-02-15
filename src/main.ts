@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,9 +14,17 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
+  const configService = app.get(ConfigService);
+
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('doc', app, document);
-  await app.listen(process.env.PORT ?? 3000);
+
+  const port = configService.get<string>('PORT') ?? 3000;
+  const host = configService.get<string>('HOST') ?? 'localhost';
+  await app.listen(port, host, () =>
+    console.log(`Listening on http://${host}:${port}`),
+  );
 }
+
 bootstrap();

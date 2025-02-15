@@ -2,12 +2,13 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(createUserDto: CreateUserDto) {
     try {
       const newUser = await this.prisma.user.create({ data: createUserDto });
@@ -22,16 +23,22 @@ export class UserService {
     }
   }
 
-  async findOne({ username, email }: { username?: string; email?: string }) {
+  async findOne({
+    username,
+    email,
+  }: {
+    username?: string;
+    email?: string;
+  }): Promise<User> {
     const query: any = {};
     if (username) query.username = username;
     if (email) query.email = email;
 
-    return await this.prisma.user.findFirst({
+    return this.prisma.user.findFirst({
       where: {
         username,
         email,
-      }
+      },
     });
   }
 
@@ -39,11 +46,13 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
-    
-    if (updateUserDto.username) user.username = updateUserDto.username; 
-    if (updateUserDto.password) user.password = await bcrypt.hash(updateUserDto.password);
-    if (updateUserDto.key) user.key = updateUserDto.key; 
-    
+
+    if (updateUserDto.username) user.username = updateUserDto.username;
+    if (updateUserDto.password) {
+      const saltrounds = 10;
+      user.password = await bcrypt.hash(updateUserDto.password, saltrounds);
+    }
+    if (updateUserDto.key) user.key = updateUserDto.key;
 
     return user;
   }
