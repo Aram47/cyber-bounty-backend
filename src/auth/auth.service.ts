@@ -2,16 +2,15 @@ import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto';
 import { CreateUserDto } from 'src/user/dto';
-import { PasswordService } from './password.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
@@ -25,7 +24,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordCorrect = await this.passwordService.compare(
+    const isPasswordCorrect = await bcrypt.compare(
       dto.password,
       user.password,
     );
@@ -39,7 +38,7 @@ export class AuthService {
   }
 
   async register(@Body() dto: CreateUserDto) {
-    dto.password = await this.passwordService.hash(dto.password);
+    dto.password = await bcrypt.hash(dto.password);
     const res = await this.userService.create(dto);
     return res;
   }

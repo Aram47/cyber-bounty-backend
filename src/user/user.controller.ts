@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Body,
   Patch,
   Param,
@@ -11,7 +12,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -21,13 +22,11 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(
+    @Query('email') email?: string,
+    @Query('username') username?: string,
+  ) {
+    return this.userService.findOne({email, username});
   }
 
   @Patch(':id')

@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -21,19 +22,33 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findOne({ username, email }: { username?: string; email?: string }) {
+    const query: any = {};
+    if (username) query.username = username;
+    if (email) query.email = email;
+
+    return await this.prisma.user.findFirst({
+      where: {
+        username,
+        email,
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    
+    if (updateUserDto.username) user.username = updateUserDto.username; 
+    if (updateUserDto.password) user.password = await bcrypt.hash(updateUserDto.password);
+    if (updateUserDto.key) user.key = updateUserDto.key; 
+    
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return this.prisma.user.delete({ where: { id } });
   }
 }

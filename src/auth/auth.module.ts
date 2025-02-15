@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { PasswordService } from './password.service';
 import { JwtModule } from '@nestjs/jwt';
 import * as process from 'node:process';
 import { UserModule } from '../user/user.module';
@@ -16,7 +15,7 @@ import { AuthGuard } from './auth.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService, AuthGuard],
+  providers: [AuthService, AuthGuard],
   exports: [JwtModule],
 })
 export class AuthModule {}

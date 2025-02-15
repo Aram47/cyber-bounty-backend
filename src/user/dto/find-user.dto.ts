@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class FindUserDto {
   @IsString()
@@ -10,9 +10,7 @@ export class FindUserDto {
   @IsOptional()
   email?: string;
 
+  @IsString()
   @IsOptional()
-  @Transform(({ value }) => (value ? Number(value) : undefined))
-  @IsNumber()
-  @IsPositive()
-  age?: number;
+  key?: string;
 }
