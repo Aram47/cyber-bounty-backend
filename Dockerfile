@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
+RUN npx prisma init
+
 COPY . .
 
 EXPOSE 1488
