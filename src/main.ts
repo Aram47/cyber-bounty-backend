@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,15 +17,14 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  app.use(cookieParser(configService.get<string>('COOKIE_SECRET')));
+
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('doc', app, document);
 
   const port = configService.get<string>('PORT') ?? 3000;
-  const host = configService.get<string>('HOST') ?? 'localhost';
-  await app.listen(port, host, () =>
-    console.log(`Listening on http://${host}:${port}`),
-  );
+  await app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 
 bootstrap();

@@ -16,18 +16,22 @@ export class AuthService {
   ) {}
 
   async login(@Body() dto: LoginDto) {
+    const toFind = {};
+    if (dto.email) {
+      toFind['email'] = dto.email;
+    } else {
+      toFind['username'] = dto.username;
+    }
+
     const user = await this.prisma.user.findUnique({
-      where: dto as User,
+      where: toFind as User,
     });
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordCorrect = await bcrypt.compare(
-      dto.password,
-      user.password,
-    );
+    const isPasswordCorrect = await bcrypt.compare(dto.password, user.password);
 
     if (!isPasswordCorrect) {
       throw new UnauthorizedException('Invalid password');
