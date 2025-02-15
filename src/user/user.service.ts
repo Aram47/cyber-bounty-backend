@@ -4,8 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+// import { PrismaService } from 'src/prisma/prisma.service';
+// import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -75,6 +75,16 @@ export class UserService {
   }
 
   async remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+    try {
+      const res = await this.prisma.user.delete({ where: { id } });
+      return res;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new BadRequestException("User doesn't exist");
+        }
+      }
+      throw new HttpException('Internal server error', 500);
+    }
   }
 }

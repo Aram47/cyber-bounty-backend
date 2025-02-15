@@ -1,8 +1,14 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Matches, ValidateIf, ValidateIf } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsStrongPassword,
+  Matches,
+  ValidateIf,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
-
   @ApiProperty({
     description: 'Email address, unique for everyone',
     example: 'some@email.com',
@@ -10,13 +16,7 @@ export class LoginDto {
   @IsNotEmpty()
   @IsEmail()
   @ValidateIf((o) => !o.username)
-  @ValidateIf((o) => !o.email)
-  email??: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ValidateIf((o) => !o.username)
-  username?: string;
+  email?: string;
 
   @Matches(/^(?![_\-.])[a-zA-Z0-9_.-]{3,30}(?<![_\-.])$/, {
     message:
