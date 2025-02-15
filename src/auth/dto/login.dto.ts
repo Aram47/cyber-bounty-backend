@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Matches, ValidateIf } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Matches, ValidateIf, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
@@ -10,7 +10,13 @@ export class LoginDto {
   @IsNotEmpty()
   @IsEmail()
   @ValidateIf((o) => !o.username)
-  email?: string;
+  @ValidateIf((o) => !o.email)
+  email??: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ValidateIf((o) => !o.username)
+  username?: string;
 
   @Matches(/^(?![_\-.])[a-zA-Z0-9_.-]{3,30}(?<![_\-.])$/, {
     message:

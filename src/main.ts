@@ -4,9 +4,21 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
+
+  const config = new DocumentBuilder()
+    .setTitle('cyber bounty platform')
+    .setDescription('Docmentation for the bacend task')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('doc', app, document);
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
