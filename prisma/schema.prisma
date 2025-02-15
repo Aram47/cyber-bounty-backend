@@ -8,27 +8,23 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement()) 
-  email         String    @unique
-  password      String
-  username      String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  key           Key?      @relation("UserKey")
-  data          Data?      @relation("UserData")
+  id              Int         @id @default(autoincrement()) 
+  email           String      @unique
+  password        String
+  username        String      @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  key             String      @unique
+  incomingData    FileInfo[]  @relation("Recipient")
+  outgoingData    FileInfo[]  @relation("Author")
 }
 
-model Key {
-  id            Int       @id @default(autoincrement()) 
-  key           String    @unique                       
-  userId        Int       @unique
-  user          User      @relation("UserKey", fields: [userId], references: [id])
-}
-
-model Data {
-  id            Int     @id @default(autoincrement())
-  encRandKey    String  @unique
-  hashData      String  @unique
-  recipientsId  Int     @unique
-  user          User    @relation("UserData", fields: [recipientsId], references: [id])
+model FileInfo {
+  id              Int         @id @default(autoincrement())
+  encRandKey      String      @unique
+  hashData        String      @unique
+  recipientsId    Int         @unique
+  authorId        Int
+  user            User        @relation("Recipient", fields: [recipientsId], references: [id])
+  auther          User        @relation("Author", fields: [authorId], references: [id])
 }

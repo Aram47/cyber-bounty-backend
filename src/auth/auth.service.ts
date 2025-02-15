@@ -1,24 +1,24 @@
 import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto, RegisterDto } from './dto';
+import { LoginDto } from './dto';
+import { CreateUserDto } from 'src/user/dto';
 import { PasswordService } from './password.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
-    private readonly jwtSwervice: JwtService,
+    private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
 
   async login(@Body() dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
+      where: dto as User,
     });
 
     if (!user) {
@@ -34,11 +34,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const token: string = this.jwtSwervice.sign({ email: dto.email });
+    const token: string = this.jwtService.sign({ email: dto.email });
     return { user, token };
   }
 
-  async register(@Body() dto: RegisterDto) {
+  async register(@Body() dto: CreateUserDto) {
     dto.password = await this.passwordService.hash(dto.password);
     const res = await this.userService.create(dto);
     return res;

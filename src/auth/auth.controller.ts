@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto';
+import { LoginDto } from './dto';
+import { CreateUserDto } from 'src/user/dto';
 import { Response } from 'express';
 import { EmailNotRegisteredPipe } from './pipes/email-not-registered.pipe';
 
@@ -19,17 +20,16 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24 * 30,
       signed: true,
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+
     delete user.password;
     return {
-      message: `Welcome back, ${user.username}`,
+      message: `Welcome back, ${user.username} jan`,
       user,
     };
   }
 
   @Post('register')
-  async register(@Body(EmailNotRegisteredPipe) dto: RegisterDto) {
+  async register(@Body(EmailNotRegisteredPipe) dto: CreateUserDto) {
     return await this.authService.register(dto);
   }
 }
