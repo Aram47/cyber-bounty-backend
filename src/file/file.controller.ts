@@ -1,20 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FileService } from './file.service';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { FileDto } from './dto';
 
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Post()
-  create(@Body() createFileDto: CreateFileDto) {
-    return this.fileService.create(createFileDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.fileService.findAll();
+  create(@Body() fileDto: FileDto) {
+    return this.fileService.create(fileDto);
   }
 
   @Get(':id')
@@ -22,9 +16,14 @@ export class FileController {
     return this.fileService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.fileService.update(+id, updateFileDto);
+  @Get()
+  findAll() {
+    return this.fileService.findAll();
+  }
+
+  @Delete()
+  removeAll() {
+    return this.fileService.removeAll();
   }
 
   @Delete(':id')

@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { FileDto } from './dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { FileInfo, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FileService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(fileDto: FileDto) {
+    fileDto['autherId'] = 'xer';
+    await this.prisma.fileInfo.create({
+      data: fileDto as FileInfo,
+    });
+    return 'This action adds a new file' + fileDto;
   }
 
   findAll() {
@@ -16,8 +22,8 @@ export class FileService {
     return `This action returns a #${id} file`;
   }
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
+  removeAll() {
+    return `This action removes a file`;
   }
 
   remove(id: number) {
