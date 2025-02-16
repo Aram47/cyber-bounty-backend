@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsNotEmpty } from 'class-validator';
 
 export class FileDto {
   @IsString()
@@ -7,6 +7,7 @@ export class FileDto {
   @IsString()
   hashData: string;
 
+  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   recipientsId: number;

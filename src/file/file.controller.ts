@@ -1,33 +1,34 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileDto } from './dto';
+import { CurrentUserId } from '../user/decorators/current-user.decorator';
 
 @Controller('file')
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
+  constructor(private readonly fileService: FileService) { }
 
   @Post()
-  create(@Body() fileDto: FileDto) {
-    return this.fileService.create(fileDto);
+  create(@CurrentUserId() currentUserId: number, @Body() fileDto: FileDto) {
+    return this.fileService.create(currentUserId, fileDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fileService.findOne(+id);
+  findOne(@CurrentUserId() currentUserId: number, @Param('id') id: string) {
+    return this.fileService.findOne(currentUserId, +id);
   }
 
   @Get()
-  findAll() {
-    return this.fileService.findAll();
+  findAll(@CurrentUserId() currentUserId: number) {
+    return this.fileService.findAll(currentUserId);
   }
 
   @Delete()
-  removeAll() {
-    return this.fileService.removeAll();
+  removeAll(@CurrentUserId() currentUserId: number) {
+    return this.fileService.removeAll(currentUserId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.fileService.remove(+id);
+  remove(@CurrentUserId() currentUserId: number, @Param('id') id: string) {
+    return this.fileService.remove(currentUserId, +id);
   }
 }
