@@ -23,7 +23,7 @@ model FileInfo {
   id              Int         @id @default(autoincrement())
   encRandKey      String      @unique
   hashData        String      @unique
-  recipientsId    Int         @unique
+  recipientsId    Int         
   authorId        Int
   user            User        @relation("Recipient", fields: [recipientsId], references: [id])
   auther          User        @relation("Author", fields: [authorId], references: [id])

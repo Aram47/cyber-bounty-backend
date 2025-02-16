@@ -62,18 +62,20 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (updateUserDto.username) user.username = updateUserDto.username;
-    if (updateUserDto.password) {
-      const saltrounds = 10;
-      user.password = await bcrypt.hash(updateUserDto.password, saltrounds);
+    try {
+      if (updateUserDto.password) {
+        const saltrounds = 10;
+        const password = await bcrypt.hash(updateUserDto.password, saltrounds);
+        updateUserDto.password = password;
+      }
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: updateUserDto,
+      });
+      return user;
+    } catch (error) {
+      throw new Error(`Failed to update user: ${error.message}`);
     }
-    if (updateUserDto.key) user.key = updateUserDto.key;
-
-    return user;
   }
 
   async remove(id: number) {

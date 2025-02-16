@@ -7,23 +7,33 @@ import { FileInfo, Prisma } from '@prisma/client';
 export class FileService {
   constructor(private readonly prisma: PrismaService) {}
   async create(autherId: number, fileDto: FileDto) {
-    fileDto['autherId'] = autherId;
-    await this.prisma.fileInfo.create({
-      data: fileDto as FileInfo,
-    });
-
-    return 'This action adds a new file' + fileDto;
+    try {
+      fileDto['authorId'] = autherId;
+      console.log(fileDto as FileInfo);
+      await this.prisma.fileInfo.create({
+        data: fileDto as FileInfo,
+      });
+      return fileDto;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new BadRequestException('Cannot send file');
+        }
+      }
+      // console.log(error.code);
+      throw new HttpException('Internal server error', 500);
+    }
   }
 
   async findAll(currentUserId: number) {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: currentUserId },
-        include: {
-          incomingData: true,
-        },
+      const res = await this.prisma.fileInfo.findMany({
+        where: { recipientsId: currentUserId },
       });
-      return user.incomingData;
+      await this.prisma.fileInfo.deleteMany({
+        where: { recipientsId: currentUserId },
+      });
+      return res;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -35,26 +45,23 @@ export class FileService {
   }
 
   async findOne(currentUserId: number, id: number) {
-    // try {
-    //   const user = await this.prisma.user.findUnique({
-    //     where: { id: currentUserId },
-    //   });
-    //   const file = await user.incomingData.findFirstOrThrow({ where: { id } });
-    //   return file;
-    // } catch (error) {
-    //   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    //     if (error.code === 'P2025') {
-    //       throw new BadRequestException("File doesn't exist");
-    //     }
-    //   }
-    //   throw new HttpException('Internal server error', 500);
-    // }
-    return `This action returns a #${id} ${currentUserId}file`;
+    try {
+      const file = await this.prisma.fileInfo.findFirstOrThrow({
+        where: { id, recipientsId: currentUserId },
+      });
+      return file;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new BadRequestException("File doesn't exist");
+        }
+      }
+      throw new HttpException('Internal server error', 500);
+    }
   }
 
   async removeAll(currentUserId: number) {
     try {
-      /* Operations which will remove files from IPFS*/
       const res = await this.prisma.fileInfo.deleteMany({
         where: { authorId: currentUserId },
       });
