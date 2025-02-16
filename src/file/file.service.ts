@@ -35,21 +35,21 @@ export class FileService {
   }
 
   async findOne(currentUserId: number, id: number) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: currentUserId },
-      });
-      const file = await user.incomingData.findFirstOrThrow({ where: { id } });
-      return file;
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new BadRequestException("File doesn't exist");
-        }
-      }
-      throw new HttpException('Internal server error', 500);
-    }
-    // return `This action returns a #${id} file`;
+    // try {
+    //   const user = await this.prisma.user.findUnique({
+    //     where: { id: currentUserId },
+    //   });
+    //   const file = await user.incomingData.findFirstOrThrow({ where: { id } });
+    //   return file;
+    // } catch (error) {
+    //   if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    //     if (error.code === 'P2025') {
+    //       throw new BadRequestException("File doesn't exist");
+    //     }
+    //   }
+    //   throw new HttpException('Internal server error', 500);
+    // }
+    return `This action returns a #${id} ${currentUserId}file`;
   }
 
   async removeAll(currentUserId: number) {
@@ -67,20 +67,16 @@ export class FileService {
       }
       throw new HttpException('Internal server error', 500);
     }
-    // return `This action removes a file`;
   }
 
   async remove(currentUserId: number, id: number) {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: currentUserId },
+      const res = await this.prisma.fileInfo.delete({
+        where: {
+          authorId: currentUserId,
+          id,
+        },
       });
-      let file = await user.outgoingData.findUnique({ where: { id } });
-      if (!file) {
-        file = await user.incomingData.findFirstOrThrow({ where: { id } });
-      }
-      /* Operations which will remove file from IPFS*/
-      const res = await this.prisma.fileInfo.delete({ where: { id } });
       return res;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
