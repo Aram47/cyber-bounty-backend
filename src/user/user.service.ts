@@ -23,13 +23,16 @@ export class UserService {
     }
   }
 
-  async findOne({
-    username,
-    email,
-  }: {
-    username?: string;
-    email?: string;
-  }): Promise<User> {
+  async findOne(
+    currentUserId: number,
+    {
+      username,
+      email,
+    }: {
+      username?: string;
+      email?: string;
+    },
+  ): Promise<User> {
     const query: any = {};
     if (username) {
       query['username'] = username;
@@ -41,13 +44,14 @@ export class UserService {
       const res = await this.prisma.user.findFirstOrThrow({
         where: query as User,
       });
-      // console.log(id, res['id']);
-
-      // if (id == res['id']) {
-      //   throw new BadRequestException("You can't send document to yourself");
-      // }
+      if (currentUserId === res['id']) {
+        throw new BadRequestException('You cannot query yourself.');
+      }
       return res;
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
           throw new BadRequestException("User doesn't exist");

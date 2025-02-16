@@ -7,9 +7,11 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Request } from 'express';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -23,10 +25,14 @@ export class UserController {
 
   @Get()
   findOne(
+    @Req() req: Request,
     @Query('email') email?: string,
     @Query('username') username?: string,
   ) {
-    return this.userService.findOne({ email, username });
+    const currentCoockie = req.signedCookies['token'];
+    const currentUserId = currentCoockie.userId;
+
+    return this.userService.findOne(currentUserId, { email, username });
   }
 
   @Patch(':id')
