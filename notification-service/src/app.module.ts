@@ -3,7 +3,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NotificationGateway } from './notification/notification.gateway';
+import { NotificationsGateway } from './notification/notification.gateway';
 
 @Module({
   imports: [
@@ -16,6 +16,6 @@ import { NotificationGateway } from './notification/notification.gateway';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, NotificationGateway],
+  providers: [AppService, NotificationsGateway],
 })
 export class AppModule {}
