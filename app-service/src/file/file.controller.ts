@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileDto } from './dto';
 import { CurrentUserId } from '../user/decorators/current-user.decorator';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) { }
