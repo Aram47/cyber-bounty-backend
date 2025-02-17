@@ -18,7 +18,6 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
     const token: string = request.headers['authorization']?.split(' ')[1];
-    console.log(token);
     if (!token) {
       return false;
     }
