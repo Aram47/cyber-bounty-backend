@@ -25,7 +25,8 @@
     "@nestjs/common": "^11.0.9",
     "@nestjs/core": "^11.0.9",
     "@nestjs/platform-express": "^11.0.9",
-    "@nestjs/platform-socket.io": "^11.0.9",
+    "@nestjs/platform-socket.io": "^11.0.10",
+    "@nestjs/websockets": "^11.0.10",
     "@types/cache-manager": "^4.0.6",
     "cache-manager": "^6.4.0",
     "cache-manager-ioredis-yet": "^2.1.2",
@@ -33,7 +34,9 @@
     "ioredis": "^5.5.0",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
+    "socket.io-redis": "^5.4.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
