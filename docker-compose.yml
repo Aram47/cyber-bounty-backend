@@ -14,19 +14,33 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: on-failure
 
   app:
     build:
-      context: ./app-service
+      context: ./app-service/
     ports:
       - "1488:1488"
     env_file:
       - ./app-service/.env
     depends_on:
-      - dev-db
+      dev-db:
+        condition: service_healthy
     volumes:
-      - .:/app
+      - ./app-service:/app
 
+  notification:
+    build:
+      context: ./notification-service/
+    ports:
+      - "6969:6969"
+    env_file:
+      - ./notification-service/.env
+    depends_on:
+      dev-db:
+        condition: service_healthy
+    volumes:
+      - ./notification-service:/app
 
 volumes:
   pg_data:
