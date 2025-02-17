@@ -5,6 +5,6 @@ export const CurrentUserId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
     const currentCookie = request.signedCookies['token'];
-    return currentCookie.userId;
+    return currentCookie?.userId;
   },
 );
