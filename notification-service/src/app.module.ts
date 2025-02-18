@@ -1,21 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NotificationsGateway } from './notification/notification.gateway';
+import { RedisService } from './redis/redis.service';
+import { InterServiceHandlerModule } from './inter-service-handler/inter-service-handler.module';
+import { ObserverModule } from './observer/observer.module';
 
 @Module({
-  imports: [
-    CacheModule.register({
-      isGlobal: true,
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      ttl: 0,
-    }),
-  ],
+  imports: [InterServiceHandlerModule, NotificationsGateway, ObserverModule],
   controllers: [AppController],
-  providers: [AppService, NotificationsGateway],
+  providers: [AppService, RedisService],
 })
 export class AppModule {}

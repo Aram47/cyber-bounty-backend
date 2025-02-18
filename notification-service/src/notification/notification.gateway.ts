@@ -1,45 +1,37 @@
 import {
   WebSocketGateway,
   WebSocketServer,
-  SubscribeMessage,
-  MessageBody,
   ConnectedSocket,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { createAdapter } from 'socket.io-redis';
-// import { RedisClient } from 'redis';
-// import { Observer } from './observer.service';
+import { ObserverService } from '../observer/observer.service';
+import { RedisService } from '../redis/redis.service';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class NotificationsGateway {
-  // @WebSocketServer()
-  // server: Server;
+export class NotificationsGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
+  @WebSocketServer()
+  server: Server;
+  redis: RedisService;
 
-  // private observer: Observer;
+  observer: ObserverService;
+  constructor() {
+    this.observer = new ObserverService(this.redis);
+  }
 
-  constructor() {}
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    ObserverService.setServer(this.server);
+    await this.observer.addClientToDb(client);
+  }
 
-  // private setupRedisAdapter() {
-  //   const pubClient = new RedisClient({ host: 'localhost', port: 6379 });
-  //   const subClient = pubClient.duplicate();
-  //   this.server.adapter(createAdapter({ pubClient, subClient }));
-  // }
-
-  // @SubscribeMessage('subscribe')
-  // handleSubscription(@MessageBody() data: { userId: string }, @ConnectedSocket() client: Socket) {
-  //   this.observer.subscribe(data.userId, client);
-  // }
-
-  // @SubscribeMessage('unsubscribe')
-  // handleUnsubscription(@MessageBody() data: { userId: string }) {
-  //   this.observer.unsubscribe(data.userId);
-  // }
-
-  // sendNotification(userId: string, message: string) {
-  //   this.observer.notify(userId, message);
-  // }
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
+    await this.observer.removeClientFromDb(client);
+  }
 }
