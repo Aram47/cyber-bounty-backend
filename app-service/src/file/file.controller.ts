@@ -16,14 +16,18 @@ export class FileController {
   }
 
   @Get(':id')
-  findOne(@CurrentUserId() currentUserId: number, @Param('id') id: string) {
-    return this.fileService.findOne(currentUserId, +id);
+  async findOne(@CurrentUserId() currentUserId: number, @Param('id') id: string) {
+    const res = await this.fileService.findOne(currentUserId, +id)
+    await this.fileService.remove(currentUserId, +id);
+    return res;
   }
 
   @ApiOperation({ summary: 'Get all file requests' })
   @Get()
-  findAll(@CurrentUserId() currentUserId: number) {
-    return this.fileService.findAll(currentUserId);
+  async findAll(@CurrentUserId() currentUserId: number) {
+    const res = await this.fileService.findAll(currentUserId)
+    await this.fileService.removeAll(currentUserId);
+    return res;
   }
 
   @Delete()

@@ -8,19 +8,23 @@ export class FileService {
   constructor(private readonly prisma: PrismaService) {}
   async create(autherId: number, fileDto: FileDto) {
     try {
+      if (autherId === fileDto.recipientsId) {
+        throw new BadRequestException('You cannot query yourself.');
+      }
       fileDto['authorId'] = autherId;
-      console.log(fileDto as FileInfo);
       await this.prisma.fileInfo.create({
         data: fileDto as FileInfo,
       });
       return fileDto;
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new BadRequestException('Cannot send file');
         }
       }
-      // console.log(error.code);
       throw new HttpException('Internal server error', 500);
     }
   }
