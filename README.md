@@ -11,6 +11,11 @@
 - GNU Make
 - Docker
 
+## Documentation
+
+There is a swagger documentation at http://localhost:1488/doc 
+(assuming you're running the server on port 1488)
+
 ## Optional
 - IPFS daemon (if you need to use the server alongside with frontend part)
 
@@ -46,4 +51,3 @@ $ make re # WARNING make remove_all && make
 ## License
 
 This project is [GPL3 licensed](https://github.com/Aram47/cyber-bounty-backend/blob/main/LICENSE).
-# cyber-bounty-backend
