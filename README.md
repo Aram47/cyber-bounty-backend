@@ -11,13 +11,13 @@
 - GNU Make
 - Docker
 
+## Optional
+- IPFS daemon (if you need to use the server alongside with frontend part)
+
 ## Documentation
 
 There is a swagger documentation at http://localhost:1488/doc 
 (assuming you're running the server on port 1488)
-
-## Optional
-- IPFS daemon (if you need to use the server alongside with frontend part)
 
 # 💀 Important 
 ```bash
