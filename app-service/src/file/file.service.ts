@@ -8,17 +8,18 @@ export class FileService {
   constructor(private readonly prisma: PrismaService) {}
   async create(autherId: number, fileDto: FileDto) {
     try {
+      if (fileDto.recipientsId === autherId) {
+        throw new BadRequestException('You cant send file to you');
+      }
       fileDto['authorId'] = autherId;
-      console.log(autherId);
-      console.log(autherId);
-      console.log(autherId);
-      console.log(autherId);
-      console.log(fileDto as FileInfo);
       await this.prisma.fileInfo.create({
         data: fileDto as FileInfo,
       });
       return fileDto;
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new BadRequestException('Cannot send file');

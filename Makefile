@@ -13,7 +13,7 @@ endif
 
 all: up
 
-up:
+up: npm
 	@echo "$(yellow)===============================$(reset)"
 	@echo "$(yellow)======= Building images =======$(reset)"
 	@echo "$(yellow)===============================$(reset)"
@@ -22,7 +22,7 @@ up:
 	@echo "$(yellow)======= Images build successfully =======$(reset)"
 	@echo "$(yellow)=========================================$(reset)"
 
-up_background:
+up_background: npm
 	@echo "$(green)==================================$(reset)"
 	@echo "$(green)======= Lifting containers =======$(reset)"
 	@echo "$(green)==================================$(reset)"
@@ -68,7 +68,7 @@ stop:
 	@echo "$(red)======= Containers stopped =======$(reset)"
 	@echo "$(red)==================================$(reset)"
 
-remove_all: hard_down remove_volumes
+remove_all: hard_down
 	@docker system prune -a
 	@if [ -n "$(shell docker images -q)" ]; then \
     		docker rmi -f $(shell docker images -q); \

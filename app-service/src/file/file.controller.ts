@@ -11,39 +11,34 @@ import { FileService } from './file.service';
 import { FileDto } from './dto';
 import { CurrentUserId } from '../user/decorators/current-user.decorator';
 import { AuthGuard } from '../auth/auth.guard';
-import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
-import { ApiOperation } from "@nestjs/swagger";
+import { ApiOperation } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard)
 @Controller('file')
 export class FileController {
-  constructor(
-    private readonly fileService: FileService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly fileService: FileService) {}
 
   @Post()
-  async create(
-    @CurrentUserId() currentUserId: number,
-    @Body() fileDto: FileDto,
-  ) {
-    const result = await this.fileService.create(currentUserId, fileDto);
-    const url = `${this.configService.get<string>('NOTIFICATION_SERVICE_HOST')}:${this.configService.get<string>('NOTIFICATION_SERVICE_PORT')}/users/${+fileDto.recipientsId}`;
-    const data = (await axios.get(url)).data;
-    console.log(data);
-    return result;
+  create(@CurrentUserId() currentUserId: number, @Body() fileDto: FileDto) {
+    return this.fileService.create(currentUserId, fileDto);
   }
 
   @Get(':id')
-  findOne(@CurrentUserId() currentUserId: number, @Param('id') id: string) {
-    return this.fileService.findOne(currentUserId, +id);
+  async findOne(
+    @CurrentUserId() currentUserId: number,
+    @Param('id') id: string,
+  ) {
+    const res = await this.fileService.findOne(currentUserId, +id);
+    await this.fileService.remove(currentUserId, +id);
+    return res;
   }
 
   @ApiOperation({ summary: 'Get all file requests' })
   @Get()
-  findAll(@CurrentUserId() currentUserId: number) {
-    return this.fileService.findAll(currentUserId);
+  async findAll(@CurrentUserId() currentUserId: number) {
+    const res = await this.fileService.findAll(currentUserId);
+    await this.fileService.removeAll(currentUserId);
+    return res;
   }
 
   @Delete()
