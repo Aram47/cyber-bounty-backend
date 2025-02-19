@@ -3,6 +3,7 @@ import { FileService } from './file.service';
 import { FileDto } from './dto';
 import { CurrentUserId } from '../user/decorators/current-user.decorator';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiOperation } from "@nestjs/swagger";
 
 @UseGuards(AuthGuard)
 @Controller('file')
@@ -19,6 +20,7 @@ export class FileController {
     return this.fileService.findOne(currentUserId, +id);
   }
 
+  @ApiOperation({ summary: 'Get all file requests' })
   @Get()
   findAll(@CurrentUserId() currentUserId: number) {
     return this.fileService.findAll(currentUserId);
