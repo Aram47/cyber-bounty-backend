@@ -1,8 +1,9 @@
 <p align="center">
-  <a target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://raw.githubusercontent.com/Aram47/cyber-bounty-backend/main/icons/logo.png" width="250" alt="Your Logo" />
 </p>
 
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+
+[//]: # ([circleci-url]: https://circleci.com/gh/nestjs/nest)
 
 # Requirements
 
