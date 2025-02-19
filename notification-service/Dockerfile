@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY . .
-
 RUN npm install
+
+COPY . .
 
 # Install Redis
 RUN apt-get update && apt-get install -y redis-server
