@@ -1,6 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { InterServiceHandlerService } from './inter-service-handler.service';
-
 @Controller('inter-service-handler')
 export class InterServiceHandlerController {
   constructor(
@@ -8,7 +7,7 @@ export class InterServiceHandlerController {
   ) {}
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.interServiceHandlerService.findOne(id);
   }
 }

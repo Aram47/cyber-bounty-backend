@@ -12,7 +12,7 @@ import { FileModule } from './file/file.module';
     PrismaModule,
     AuthModule,
     UserModule,
-    ConfigModule.forRoot({}),
+    ConfigModule.forRoot({ isGlobal: true }),
     FileModule,
   ],
   controllers: [AppController],

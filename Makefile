@@ -13,7 +13,7 @@ endif
 
 all: up
 
-up: npm
+up:
 	@echo "$(yellow)===============================$(reset)"
 	@echo "$(yellow)======= Building images =======$(reset)"
 	@echo "$(yellow)===============================$(reset)"
@@ -22,7 +22,7 @@ up: npm
 	@echo "$(yellow)======= Images build successfully =======$(reset)"
 	@echo "$(yellow)=========================================$(reset)"
 
-up_background: npm
+up_background:
 	@echo "$(green)==================================$(reset)"
 	@echo "$(green)======= Lifting containers =======$(reset)"
 	@echo "$(green)==================================$(reset)"

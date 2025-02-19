@@ -33,6 +33,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.9",
     "@nestjs/swagger": "^11.0.3",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bcrypto": "^5.5.2",
     "class-transformer": "^0.5.1",

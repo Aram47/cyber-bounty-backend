@@ -9,6 +9,10 @@ export class FileService {
   async create(autherId: number, fileDto: FileDto) {
     try {
       fileDto['authorId'] = autherId;
+      console.log(autherId);
+      console.log(autherId);
+      console.log(autherId);
+      console.log(autherId);
       console.log(fileDto as FileInfo);
       await this.prisma.fileInfo.create({
         data: fileDto as FileInfo,
@@ -20,7 +24,7 @@ export class FileService {
           throw new BadRequestException('Cannot send file');
         }
       }
-      // console.log(error.code);
+      console.log(error.code);
       throw new HttpException('Internal server error', 500);
     }
   }

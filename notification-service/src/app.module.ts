@@ -11,4 +11,4 @@ import { ObserverModule } from './observer/observer.module';
   controllers: [AppController],
   providers: [AppService, RedisService],
 })
-export class AppModule {}
+export class AppModule { }
