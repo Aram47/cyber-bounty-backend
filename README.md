@@ -2,7 +2,6 @@
   <img src="https://raw.githubusercontent.com/Aram47/cyber-bounty-backend/main/icons/logo.png" width="250" alt="Your Logo" />
 </p>
 
-
 [//]: # ([circleci-url]: https://circleci.com/gh/nestjs/nest)
 
 # Requirements
